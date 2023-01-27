@@ -207,10 +207,19 @@ while True:
                             pass_input_reg = pass_input_reg[:-1]
                         else:
                             pass_input_reg += event.unicode
-
+        
+        if ctr_gameloop:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    ctr_gameloop = False
+                    ctr_login = True
+                    
         # Main game command loop
         # if ctr_gameloop:
-    dt = clock.tick()/1000
+    dt = clock.tick(60)/1000
+    # print(dt)
     if ctr_gameloop:
         level_surface.run(dt)
+
+
     pygame.display.update()
