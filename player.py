@@ -14,6 +14,7 @@ class Player(Entity):
         # character general setup
         self.image = self.animations[self.status][self.frame_index]
         self.rect = self.character_scaled().get_rect(center = pos)
+        self.hitbox = self.rect.inflate(0,-26)
         # print(self.rect)
         #orientation
         self.orientation_x = False
@@ -30,8 +31,13 @@ class Player(Entity):
         self.attack_cooldown = 400
     
         # character health
-        self.stats = {'health': 100}
+        self.stats = {'health': 100, 'attack': 10}
         self.health = self.stats['health']
+
+        #DAMAGE TIMER
+        self.vulnerable = True
+        self.hurt_time = None
+        self.invulnerability_duration = 500
 
     def import_assets(self):
         self.animations = { 'hit': [],
@@ -49,12 +55,20 @@ class Player(Entity):
         self.image = pygame.transform.scale(self.image,(16*3,22*3))
         return self.image
     
-    def animate(self, dt):
-        self.frame_index += 4 * dt
+    def animate(self):
+        self.frame_index += self.animation_speed
         # print(self.status)
         if self.frame_index >= len(self.animations[self.status]):
             self.frame_index = 0
         self.image = pygame.transform.scale(self.animations[self.status][int(self.frame_index)],(16*3,22*3))
+    
+        #flicker
+        if not self.vulnerable:
+            alpha= self.wave_value()
+            self.image.set_alpha(alpha)
+        else:
+            self.image.set_alpha(255)
+
     
     def input(self):
         if not self.attacking:
@@ -112,9 +126,18 @@ class Player(Entity):
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.attacking = False
                 self.destroy_attack()
-    def update(self,dt):
+        
+        if not self.vulnerable:
+            if current_time - self.hurt_time >= self.invulnerability_duration:
+                self.vulnerable = True
+
+    def update(self):
         self.input()
         self.cooldown()
         self.move(self.speed)
-        self.animate(dt)
+        self.animate()
+    
+    def damage(self):
+        return self.stats['attack'] 
+
 

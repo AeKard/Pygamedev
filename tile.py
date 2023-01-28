@@ -7,6 +7,7 @@ class Tile(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(pygame.image.load('walls/wall_corner_front_right.png').convert_alpha(),(32 * 2, 32*2))
         
         self.rect = self.image.get_rect(topleft = pos)
+        self.hitbox = self.rect.inflate(0,-10)
     # def transform(self):
     #     self.image = pygame.transform.scale(self.image,(60,120))
 class Floor(pygame.sprite.Sprite):
