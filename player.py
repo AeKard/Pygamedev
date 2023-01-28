@@ -1,7 +1,8 @@
 import pygame
 from support import *
-
-class Player(pygame.sprite.Sprite):
+from entity import *
+from entity import Entity
+class Player(Entity):
     def __init__(self, pos, groups,obstacle_sprite, create_attack, destroy_attack): # NEED TO KNOW WHERE OBSTACLE IS SO USE OBSTACLE 
         super().__init__(groups)
         # Initializa the player
@@ -10,7 +11,6 @@ class Player(pygame.sprite.Sprite):
         # call support and for animation
         self.import_assets()
         self.status = 'right'
-        self.frame_index = 0
         # character general setup
         self.image = self.animations[self.status][self.frame_index]
         self.rect = self.character_scaled().get_rect(center = pos)
@@ -19,11 +19,10 @@ class Player(pygame.sprite.Sprite):
         self.orientation_x = False
         self.orientation_y = False
         #movement attribute
-        self.direction = pygame.math.Vector2()
         self.orient = 'right'
         self.speed = 5
         #obstacle
-        self.obstacle_sprite = obstacle_sprite
+        self.obstacle_sprites = obstacle_sprite
         # Weapon
         self.attacking = False
         self.create_attack = create_attack
@@ -31,7 +30,8 @@ class Player(pygame.sprite.Sprite):
         self.attack_cooldown = 400
     
         # character health
-        self.health = 100
+        self.stats = {'health': 100}
+        self.health = self.stats['health']
 
     def import_assets(self):
         self.animations = { 'hit': [],
@@ -55,6 +55,7 @@ class Player(pygame.sprite.Sprite):
         if self.frame_index >= len(self.animations[self.status]):
             self.frame_index = 0
         self.image = pygame.transform.scale(self.animations[self.status][int(self.frame_index)],(16*3,22*3))
+    
     def input(self):
         if not self.attacking:
             keys = pygame.key.get_pressed()
@@ -103,35 +104,6 @@ class Player(pygame.sprite.Sprite):
                 self.status = 'right_idle'
             else:
                 self.direction == 'left'
-    def move(self, speed):
-        # self.rect.center += self.direction * speed
-        if self.direction.magnitude() != 0:
-            self.direction = self.direction.normalize()
-
-        # horizontal movement
-        self.rect.x += self.direction.x * speed
-        self.collision('horizontal')
-        # vertical
-        self.rect.y += self.direction.y * speed
-        self.collision('vertical')
-
-    def collision(self, direction):
-        if direction == 'horizontal':
-            for sprite in self.obstacle_sprite:
-                if sprite.rect.colliderect(self.rect): #sprite.rect.colide is the obstacle sprite #self.rect is the player 
-                    if self.direction.x > 0: # moving right
-                        self.rect.right = sprite.rect.left # right = to left
-                    if self.direction.x < 0:
-                        self.rect.left = sprite.rect.right # moving left
-                
-
-        if direction == 'vertical':
-            for sprite in self.obstacle_sprite:
-                if sprite.rect.colliderect(self.rect): #sprite.rect.colide is the obstacle sprite #self.rect is the player 
-                    if self.direction.y > 0: # moving right
-                        self.rect.bottom = sprite.rect.top # moving down
-                    if self.direction.y < 0:
-                        self.rect.top = sprite.rect.bottom # moving up
 
     def cooldown(self):
         current_time = pygame.time.get_ticks()
