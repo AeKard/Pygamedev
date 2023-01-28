@@ -2,6 +2,8 @@ import pygame
 from setting import *
 from player import Player
 from tile import *
+from sword import Sword
+from UI import UI
 
 class level:
     def __init__(self):
@@ -17,7 +19,9 @@ class level:
         
         #sprite setup
         self.create_map()
-        # SPRITE
+        # UI
+        self.ui = UI()
+    
     def create_map(self):
         for row_index,row in enumerate(WORLD_MAP):
             for col_index, col in enumerate(row):
@@ -31,20 +35,25 @@ class level:
                 if col == 'p':
                     Floor((x,y),[self.visible_sprite])
                     
-        for row_index,row in enumerate(WORLD_MAP):
-            for col_index, col in enumerate(row):
-                x = col_index * TILE_SIZE
-                y = row_index * TILE_SIZE
-                if col == 'p':
-                    self.player = Player((x,y),[self.visible_sprite], self.obstacle_sprite)
-    
+        self.player = Player((650,650),[self.visible_sprite], self.obstacle_sprite, self.create_attack,self.destroy_attack)
+    # WEAPON
+        
+
+    def create_attack(self):
+        self.current_attack = Sword(self.player,[self.visible_sprite])
+
+    def destroy_attack(self):
+        if self.current_attack:
+            self.current_attack.kill()
+        self.current_attack = None
     # def setup(self):
         # self.player = Player((640,360), self.player_sprite) # Gets the player pos and group
-    
+
     def run(self, dt):
         self.display_surface.fill('#2e2e2e')
         self.visible_sprite.custom_draw(self.player)
         self.visible_sprite.update(dt) # update the sprite and calls all children
+        self.ui.display(self.player)
         # self.player_sprite.draw(self.display_surface) # draw the sprite in display surface
 
 class YSortCameraGroup(pygame.sprite.Group):
