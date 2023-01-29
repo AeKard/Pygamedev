@@ -1,7 +1,6 @@
 import pygame, sys
 from setting import *
 from level import level
-
 class main:
     def __init__(self):
         pygame.init()
@@ -9,7 +8,9 @@ class main:
         self.clock = pygame.time.Clock()
     # Main SCREEN
         self.SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
-
+        surf = pygame.image.load('mouse/mouse.png').convert_alpha()
+        cursor = pygame.cursors.Cursor((0,0), surf)
+        pygame.mouse.set_cursor(cursor)
     #SCREEN CONTROL
         self.ctr_login = True
         self.ctr_register = False
