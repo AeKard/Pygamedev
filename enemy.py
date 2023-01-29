@@ -39,7 +39,8 @@ class Enemy(Entity):
         self.vulnerable = True
         self.hit_time = None
         self.invincibility_duration = 300
-    
+
+        #Number of enemy
     def animate(self):
         self.frame_index += self.animation_speed
         if self.frame_index >= len(self.animations[self.status]):
@@ -83,12 +84,14 @@ class Enemy(Entity):
         else:
             self.status = 'idle'
             self.status2 = 'idle'
+
     def update(self):
         self.hit_reaction()
         self.move(self.monster_speed)
         self.animate()
         self.cooldowns()
         self.check_death()
+        # self.numberOfenemy()
 
     def enemy_update(self,player):
         self.get_status(player)
@@ -97,7 +100,7 @@ class Enemy(Entity):
     def action(self, player):
         if self.status2 == 'attack':
             self.attack_time = pygame.time.get_ticks()
-            self.damage_player(self.monster_damage, self.monster_attack_type)
+            self.damage_player(self.monster_damage, self.monster_attack_type,player)
         elif self.status2 == 'move': # movement towards the palyer
             self.direction = self.get_player_distance_direction(player)[1]
         else:
@@ -123,8 +126,10 @@ class Enemy(Entity):
     def hit_reaction(self):
         if not self.vulnerable:
             self.direction *= -self.monster_resistance
-
+    
+        
     def check_death(self):
         if self.monster_health <= 0:
             self.trigger_death_particles(self.rect.center,self.monster_name)
             self.kill()
+

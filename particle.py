@@ -7,7 +7,8 @@ class AnimationPlayer():
         self.frames = {
             'slash': import_folder('slash/'),
             #monster Death:
-            'demon': import_folder('nova/')
+            'demon': import_folder('nova/'),
+            'oger': import_folder('nova/')
         }
 
     def create_particles(self,attack_type,pos,groups):

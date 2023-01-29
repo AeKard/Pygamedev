@@ -1,4 +1,4 @@
-import pygame
+import pygame,sys
 from setting import *
 from player import Player
 from tile import *
@@ -9,6 +9,7 @@ from particle import AnimationPlayer
 
 class level:
     def __init__(self):
+        super().__init__()
         # get the display surface
         self.display_surface = pygame.display.get_surface()
 
@@ -26,9 +27,12 @@ class level:
         self.layer = 1
         #sprite setup
         self.create_map()
+        self.place_enemy()
         # UI
         self.ui = UI()
+        self.enemy_num = 10
 
+        self.death = True
         # ANIMATIONS
         self.animation_player = AnimationPlayer()
     
@@ -40,15 +44,26 @@ class level:
                 y = row_index * TILE_SIZE 
                 if col == 'x':
                     Tile((x,y),[self.visible_sprite,self.obstacle_sprite]) # POSITION GROUP
-                if col == '0':
+                if col == '0' or col == 'e' or col == 'z':
                     Floor((x,y),[self.visible_sprite])
        
-        self.enemy = Enemy('demon',(200,200),[self.visible_sprite, self.attackable_sprites], self.obstacle_sprite,self.damage_player,self.trigger_death_particles)
-        self.enemy = Enemy('demon',(800,100),[self.visible_sprite, self.attackable_sprites], self.obstacle_sprite,self.damage_player,self.trigger_death_particles)
-        self.enemy = Enemy('demon',(500,500),[self.visible_sprite, self.attackable_sprites], self.obstacle_sprite,self.damage_player,self.trigger_death_particles)
         self.player = Player((650,650),[self.visible_sprite], self.obstacle_sprite, self.create_attack,self.destroy_attack)
     # WEAPON
+    def place_enemy(self):
+        num = 0
+        for row_index,row in enumerate(WORLD_MAP):
+        # print(f'{row}' )
+            for col_index, col in enumerate(row):
+                x = (col_index * TILE_SIZE) + 30
+                y = (row_index * TILE_SIZE) + 30 
+                if col == 'e':
+                    self.enemy = Enemy('demon',(x,y),[self.visible_sprite, self.attackable_sprites], self.obstacle_sprite,self.damage_player,self.trigger_death_particles)
+                    num+=1
+                if col == 'z':
+                    self.enemy = Enemy('oger',(x,y),[self.visible_sprite, self.attackable_sprites], self.obstacle_sprite,self.damage_player,self.trigger_death_particles)
+                    num+=1
         
+        self.enemy_num = num
 
     def create_attack(self):
         self.current_attack = Sword(self.player,[self.visible_sprite,self.attack_sprites])
@@ -60,6 +75,18 @@ class level:
     # def setup(self):
         # self.player = Player((640,360), self.player_sprite) # Gets the player pos and group
 
+    def restart(self):
+        return self.death
+    
+    def game_over(self, player):
+        condition = player.player
+        if condition:
+            self.death = True
+        else:
+            self.death = False
+            # self.restart()
+        
+
     def player_attack_logic(self):
         if self.attack_sprites:
             for attack_sprites in self.attack_sprites:
@@ -68,7 +95,7 @@ class level:
                     for target_prite in collision_sprite:
                         target_prite.get_damage(self.player)
 
-    def damage_player(self, amount, attack_type):
+    def damage_player(self, amount, attack_type,player):
             if self.player.vulnerable:
                 self.player.health -= amount
                 self.player.vulnerable = False
@@ -76,16 +103,19 @@ class level:
 
                 # PARTICLEEEEESSRHASJHDGOJFB
                 self.animation_player.create_particles(attack_type,self.player.rect.center,[self.visible_sprite])
+                self.game_over(player)
+
 
     def trigger_death_particles(self,pos,particle_type):
         self.animation_player.create_particles(particle_type, pos, self.visible_sprite)
-    def run(self, dt):
+    def run(self):
         self.display_surface.fill('#2e2e2e')
         self.visible_sprite.custom_draw(self.player)
         self.visible_sprite.update() # update the sprite and calls all children
         self.visible_sprite.enemy_update(self.player)
         self.player_attack_logic()
         self.ui.display(self.player)
+
         # self.player_sprite.draw(self.display_surface) # draw the sprite in display surface
 
 class YSortCameraGroup(pygame.sprite.Group):

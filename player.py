@@ -2,6 +2,7 @@ import pygame
 from support import *
 from entity import *
 from entity import Entity
+
 class Player(Entity):
     def __init__(self, pos, groups,obstacle_sprite, create_attack, destroy_attack): # NEED TO KNOW WHERE OBSTACLE IS SO USE OBSTACLE 
         super().__init__(groups)
@@ -39,6 +40,7 @@ class Player(Entity):
         self.hurt_time = None
         self.invulnerability_duration = 500
 
+        self.player = True
     def import_assets(self):
         self.animations = { 'hit': [],
          'right_idle': [], 
@@ -69,6 +71,9 @@ class Player(Entity):
         else:
             self.image.set_alpha(255)
 
+    def health_status(self):
+        if self.health <= 0:
+            self.player = False
     
     def input(self):
         if not self.attacking:
@@ -136,6 +141,7 @@ class Player(Entity):
         self.cooldown()
         self.move(self.speed)
         self.animate()
+        self.health_status()
     
     def damage(self):
         return self.stats['attack'] 

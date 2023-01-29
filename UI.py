@@ -10,6 +10,7 @@ class UI:
         #BAR SETUP
         self.health_bar_rect = pygame.Rect(10,10,HEALTH_BAR_WIDTH,BAR_HEIGHT)
 
+        self.score = SCORE
     def show_bar(self,current,max_amount,bg_rect,color):
         # draw bg
         pygame.draw.rect(self.display_surface,UI_BG_COLOR,bg_rect) # Drawing the background of the rectangle bar
@@ -22,5 +23,11 @@ class UI:
         # drawing the bar
         pygame.draw.rect(self.display_surface,color,current_rect)
         pygame.draw.rect(self.display_surface,UI_BORDER_COLOR,current_rect,3)
+
+    def show_score(self, score):
+        score_surf = self.font.render(score,False,(255,250,255))
+        self.display_surface.blit(score_surf,(100,100))
+    
     def display(self, player):
         self.show_bar(player.health,player.stats['health'],self.health_bar_rect,HEALTH_COLOR)
+        self.show_score(self.score)
