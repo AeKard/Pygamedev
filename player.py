@@ -41,6 +41,10 @@ class Player(Entity):
         self.invulnerability_duration = 500
 
         self.player = True
+        self.weapon_attack_sound = pygame.mixer.Sound('sound/sword.wav')
+        self.weapon_attack_sound.set_volume(0.4)
+        self.player_death_sound = pygame.mixer.Sound('sound/playerdeath.mp3')
+        self.player_death_sound.set_volume(0.6)
     def import_assets(self):
         self.animations = { 'hit': [],
          'right_idle': [], 
@@ -74,6 +78,7 @@ class Player(Entity):
     def health_status(self):
         if self.health <= 0:
             self.player = False
+            self.player_death_sound.play()
     
     def input(self):
         if not self.attacking:
@@ -116,6 +121,7 @@ class Player(Entity):
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
                 self.create_attack()
+                self.weapon_attack_sound.play()
         else:
             self.direction.y = 0
             self.direction.x = 0

@@ -8,9 +8,16 @@ class main:
         self.clock = pygame.time.Clock()
     # Main SCREEN
         self.SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+        main_sound = pygame.mixer.Sound('sound/main.ogg')
+        main_sound.set_volume(0.4)
+        main_sound.play(loops= -1)
         surf = pygame.image.load('mouse/mouse.png').convert_alpha()
         cursor = pygame.cursors.Cursor((0,0), surf)
         pygame.mouse.set_cursor(cursor)
+        pygame.display.set_caption('THE KNIGHT')
+
+
+        
     #SCREEN CONTROL
         self.ctr_login = True
         self.ctr_register = False
@@ -29,14 +36,13 @@ class main:
         self.button_pressed_login = False
         self.button_pressed_register = False
 
-        self.arrow = pygame.image.load('tutorial/1.png').convert_alpha()
-        self.space = pygame.image.load('tutorial/2.png').convert_alpha()
+        self.arrow = pygame.transform.scale(pygame.image.load('tutorial/1.png').convert_alpha(),(279 * 2, 126 * 2))
     #GLOBAL FONT
         self.base_font = pygame.font.Font('font/Pixeltype.ttf',50) # initialize the font fonttype, Fontsize
     #FONT
         self.login_surface = self.base_font.render('Login', False, 'black') # login AA color
-        self.register_surface = self.base_font.render('register', False, 'black') # login AA color
-        self.restart_msg = self.base_font.render('RESTART GAME', False, 'black')
+        self.register_surface = self.base_font.render('Register', False, 'black') # login AA color
+        self.restart_msg = self.base_font.render('EXIT GAME TO RESTART', False, 'white')
         self.login_rect = self.login_surface.get_rect(center = (SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 - 100))
         self.register_rect = self.register_surface.get_rect(center = (SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 - 100))
         self.restart_rect = self.restart_msg.get_rect(center = (SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2))
@@ -61,57 +67,55 @@ class main:
         self.user_surface_rect_reg = pygame.Rect(SCREEN_WIDTH/2 - 100,300,190,32)
 
         self.pass_input_reg = 'Password'
-        self.pass_surface_rect_reg = pygame.Rect(SCREEN_WIDTH/2 - 100, 350,190,32)
+        self.pass_surface_rect_reg = pygame.Rect(SCREEN_WIDTH/2 - 100,350,190,32)
 
         self.user_active_reg = False
         self.pass_active_reg = False
 # LEVEL
         self.level_surface = level()
-
+        self.must8 = 'Need Pass Greater Than 8'
+        self.isgreater8 = False
     def mainloop(self):
         while True:
             # MAIN SCREEN
-            self.SCREEN.fill('#F9F9F3')
+            self.SCREEN.fill('#DDB8A6')
             if self.ctr_login:
                 # LOGIN SCREEN
-                pygame.draw.rect(self.SCREEN, '#55CEFF', pygame.Rect(320,180,640,400),0,10)
-                pygame.draw.rect(self.SCREEN, '#00ABF0', pygame.Rect(320,180,640,400),5,10)
+                pygame.draw.rect(self.SCREEN, '#BEBEBE', pygame.Rect(385,180,500,400),0,10)
+                pygame.draw.rect(self.SCREEN, '#808080', pygame.Rect(385,180,500,400),5,10)
                 # Draw in login_surf
                 # placement and printing btn
                 exit_center_rect = self.exit_scaled.get_rect(center = (640,500))
                 self.SCREEN.blit(self.exit_scaled, exit_center_rect)
-                login_center_rect = self.login_scaled.get_rect(center = (400, 460))
+                login_center_rect = self.login_scaled.get_rect(center = (540, 415))
                 self.SCREEN.blit(self.login_scaled, login_center_rect)
-                register_center_rect = self.register_scaled.get_rect(center = (850, 460))
+                register_center_rect = self.register_scaled.get_rect(center = (700, 415))
                 self.SCREEN.blit(self.register_scaled, register_center_rect)
                 
                 # tutor
-                self.SCREEN.blit(self.arrow, (40,100))
-                self.SCREEN.blit(self.space, (40,200))
+                self.SCREEN.blit(self.arrow, (320,0))
                 #login text
                 self.SCREEN.blit(self.login_surface, self.login_rect)
                 #Login Input text box
-                pygame.draw.rect(self.SCREEN, 'blue',self.user_surface_rect,2)
+                pygame.draw.rect(self.SCREEN, 'black',self.user_surface_rect,2)
                 user_surface =  self.user_font.render(self.user_input,False,(255,250,250))
                 self.SCREEN.blit(user_surface,(self.user_surface_rect.x + 5, self.user_surface_rect.y + 10))
                 
-                pygame.draw.rect(self.SCREEN, 'blue',self.pass_surface_rect,2)
+                pygame.draw.rect(self.SCREEN, 'black',self.pass_surface_rect,2)
                 pass_surface =  self.user_font.render(self.pass_input,False,(255,250,250))
                 self.SCREEN.blit(pass_surface,(self.pass_surface_rect.x + 5, self.pass_surface_rect.y + 10))
 
             if self.ctr_register:
                 # Register Screen
 
-                pygame.draw.rect(self.SCREEN, '#765341', pygame.Rect(320,180,640,400),0,10)
-                pygame.draw.rect(self.SCREEN, '#5b3e31', pygame.Rect(320,180,640,400),5,10)
+                pygame.draw.rect(self.SCREEN, '#bca89f', pygame.Rect(320,180,640,400),0,10)
+                pygame.draw.rect(self.SCREEN, '#765341', pygame.Rect(320,180,640,400),5,10)
                 # Draw in login_surf
                 #btn
-                login_center_rect = self.login_scaled.get_rect(center = (400, 460))
+                login_center_rect = self.login_scaled.get_rect(center = (540, 415))
                 self.SCREEN.blit(self.login_scaled, login_center_rect)
-                exit_center_rect = self.exit_scaled.get_rect(center = (640,500))
+                exit_center_rect = self.exit_scaled.get_rect(center = (700, 415))
                 self.SCREEN.blit(self.exit_scaled, exit_center_rect)
-                register_center_rect = self.register_scaled.get_rect(center = (850, 460))
-                self.SCREEN.blit(self.register_scaled, register_center_rect)
                 #login text
                 self.SCREEN.blit(self.register_surface, self.register_rect)
                 #Login Input text box
@@ -122,6 +126,11 @@ class main:
                 pygame.draw.rect(self.SCREEN, 'blue',self.pass_surface_rect,2)
                 pass_surface_reg =  self.user_font.render(self.pass_input_reg,False,(255,250,250))
                 self.SCREEN.blit(pass_surface_reg,(self.pass_surface_rect.x + 5, self.pass_surface_rect.y + 10))
+
+                if self.isgreater8 == False:
+                    requirment =  self.user_font.render(self.must8,False,(255,250,250))
+                    self.SCREEN.blit(requirment,(400,460))
+
                 
 
             # Game Loop
@@ -131,7 +140,6 @@ class main:
                     pygame.quit()
                     sys.exit()
                 # Login Interface user INPUTS
-
                 if self.ctr_login:
                     mouse_pos = pygame.mouse.get_pos()
                     # Button Inputs
@@ -139,7 +147,7 @@ class main:
                         if pygame.mouse.get_pressed()[0] == 1:
                             pygame.draw.rect(self.SCREEN, 'red',self.user_surface_rect_reg,2)
                             pygame.draw.rect(self.SCREEN, 'red',self.pass_surface_rect,2)
-                            self.SCREEN.blit(self.user_font.render('Invalid', False, 'black'), (SCREEN_WIDTH / 2 - 50,SCREEN_HEIGHT / 2 + 50))
+                            self.SCREEN.blit(self.user_font.render('Invalid', False, 'black'), (SCREEN_WIDTH / 2 + 100,SCREEN_HEIGHT / 2 - 30))
                             if self.user_input == self.user_input_reg and self.pass_input_reg == self.pass_input and self.user_input != 'Username' and self.pass_input != 'Password':
                                 self.ctr_gameloop = True  
                     if register_center_rect.collidepoint(mouse_pos):
@@ -184,13 +192,10 @@ class main:
                     mouse_pos = pygame.mouse.get_pos()
                     # Button Inputsq
                     if login_center_rect.collidepoint(mouse_pos):
-                        if pygame.mouse.get_pressed()[0] == 1:
+                        if pygame.mouse.get_pressed()[0] == 1 and self.isgreater8:
                             self.button_pressed_login = True
                             self.ctr_register = False
                             self.ctr_login = True
-                    if register_center_rect.collidepoint(mouse_pos):
-                        if pygame.mouse.get_pressed()[0] == 1:
-                            self.button_pressed_register = True
                     if exit_center_rect.collidepoint(mouse_pos):
                         if pygame.mouse.get_pressed()[0] == 1:
                             pygame.quit()
@@ -203,6 +208,7 @@ class main:
                                 self.user_input_reg = ''
                         else:
                             self.user_active_reg = False
+                        
                         if self.pass_surface_rect_reg.collidepoint(event.pos):
                             if self.pass_input_reg == 'Password':
                                 self.pass_input_reg = ''
@@ -224,6 +230,10 @@ class main:
                                     self.pass_input_reg = self.pass_input_reg[:-1]
                                 else:
                                     self.pass_input_reg += event.unicode
+                            if len(self.pass_input_reg) > 8:
+                                self.isgreater8 = True
+                            else:
+                                self.isgreater8 = False
                 
                 if self.ctr_gameloop:
                     if event.type == pygame.KEYDOWN:
@@ -238,10 +248,9 @@ class main:
 
 
             if not self.level_surface.restart():
-                pygame.draw.rect(self.SCREEN, '#f94449', pygame.Rect(320,180,640,400),0,10)
-                pygame.draw.rect(self.SCREEN, '#de0a26', pygame.Rect(320,180,640,400),5,10)
+                self.SCREEN.fill('black')
                 self.SCREEN.blit(self.restart_msg, self.restart_rect)
-                self.SCREEN.blit(self.base_font.render('GAME OVER', False, 'black'), (SCREEN_WIDTH / 2 - 100,SCREEN_HEIGHT / 2 - 100))
+
 
             pygame.display.update()
 

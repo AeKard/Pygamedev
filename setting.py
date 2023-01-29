@@ -16,7 +16,7 @@ UI_BG_COLOR  = '#222222'
 UI_BORDER_COLOR = '#111111'
 # General Colors 
 HEALTH_COLOR = 'red'
-SCORE = f'kill all enemy if done GG restart'
+SCORE = f'kill all enemy cleans the world <3'
 NUM_ENEMY = 10
 
 WORLD_MAP = [
@@ -46,6 +46,6 @@ WORLD_MAP = [
 #ENEMY
 
 monster_data = {
-    'demon': {'health': 50, 'damage':10, 'attack_type': 'slash','resistance': 3,'speed': 2, 'attack_radius': 60, 'notice_radius': 360 },
-    'oger': {'health': 50, 'damage':10, 'attack_type': 'slash','resistance': 3,'speed': 2, 'attack_radius': 60, 'notice_radius': 360 }
+    'demon': {'health': 50, 'damage':11, 'attack_type': 'slash','resistance': 3,'speed': 2, 'attack_radius': 60, 'notice_radius': 360 },
+    'oger': {'health': 50, 'damage':21, 'attack_type': 'slash','resistance': 3,'speed': 2, 'attack_radius': 60, 'notice_radius': 360 }
 }

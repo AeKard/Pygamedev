@@ -27,6 +27,8 @@ class UI:
     def show_score(self, score):
         score_surf = self.font.render(score,False,(255,250,255))
         self.display_surface.blit(score_surf,(100,100))
+        end = self.font.render('If enemy all dead. Restart',False,(255,250,255))
+        self.display_surface.blit(end,(100,150))
     
     def display(self, player):
         self.show_bar(player.health,player.stats['health'],self.health_bar_rect,HEALTH_COLOR)

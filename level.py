@@ -12,7 +12,6 @@ class level:
         super().__init__()
         # get the display surface
         self.display_surface = pygame.display.get_surface()
-
         # sprite Group
         # self.player_sprite = pygame.sprite.Group() # groups the player
         self.visible_sprite = YSortCameraGroup()
@@ -108,6 +107,7 @@ class level:
 
     def trigger_death_particles(self,pos,particle_type):
         self.animation_player.create_particles(particle_type, pos, self.visible_sprite)
+    
     def run(self):
         self.display_surface.fill('#2e2e2e')
         self.visible_sprite.custom_draw(self.player)
